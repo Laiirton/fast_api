@@ -67,14 +67,14 @@ async def register_user(user_data: UserCreate):
     return {"access_token": access_token, "token_type": "bearer"}
 
 @router.post("/login", response_model=Token)
-async def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
+async def login_user(user_data: UserLogin):
     """
     Autentica um usuário e retorna um token de acesso
     """
     supabase = get_supabase_client()
     
     # Busca o usuário pelo nome de usuário
-    user_result = supabase.table("users").select("*").eq("username", form_data.username).execute()
+    user_result = supabase.table("users").select("*").eq("username", user_data.username).execute()
     
     if not user_result.data or len(user_result.data) == 0:
         raise HTTPException(
@@ -86,7 +86,7 @@ async def login_user(form_data: OAuth2PasswordRequestForm = Depends()):
     user = user_result.data[0]
     
     # Verifica se a senha está correta
-    if not verify_password(form_data.password, user["password"]):
+    if not verify_password(user_data.password, user["password"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Nome de usuário ou senha incorretos",
