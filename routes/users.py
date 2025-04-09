@@ -16,7 +16,7 @@ async def get_current_user_info(current_user: dict = Depends(get_current_user)):
 @router.get("/{user_id}", response_model=UserResponse)
 async def get_user_by_id(user_id: int, current_user: dict = Depends(get_current_user)):
     """
-    Retorna as informações de um usuário específico pelo ID
+    Retorna as informações de um usuário específico pelo ID (apenas o próprio usuário ou um administrador pode acessar)
     """
     # Verifica se o usuário atual tem permissão para acessar esses dados
     # (apenas o próprio usuário ou um administrador pode acessar)
